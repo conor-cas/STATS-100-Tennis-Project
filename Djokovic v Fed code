@@ -1,0 +1,15 @@
+Novak_all_years_serving <- filter(Novak_Djokovic_2017_2020, Novak_Djokovic_2017_2020$Server == "Novak Djokovic")
+
+Djo_Fed <- filter(Novak_all_years_serving, Novak_all_years_serving$Returner == "Roger Federer")
+Djo_Fed_pp <- filter(Djo_Fed, Djo_Fed$'F2:PointScore' == "0-30" | Djo_Fed$'F2:PointScore' == "0-40" | Djo_Fed$'F2:PointScore' == "15-30" | Djo_Fed$'F2:PointScore' == "15-40" | Djo_Fed$'F2:PointScore' == "30-30" | Djo_Fed$'F2:PointScore' == "30-40" | Djo_Fed$'F2:PointScore' == "Advantage Returner")
+num_Djo_Fed_pp = nrow(Djo_Fed_pp)
+Djo_Fed_pp_won <- filter(Djo_Fed_pp, Djo_Fed_pp$'Point Won' == "Novak Djokovic")
+num_Djo_Fed_pp_won = nrow(Djo_Fed_pp_won)
+Djo_Fed_pp_percent =  num_Djo_Fed_pp_won / num_Djo_Fed_pp
+Djo_Fed_norm_points <- filter(Djo_Fed, Djo_Fed$'F2:PointScore' != "0-30" & Djo_Fed$'F2:PointScore' != "0-40" & Djo_Fed$'F2:PointScore' != "15-30" & Djo_Fed$'F2:PointScore' != "15-40" & Djo_Fed$'F2:PointScore' != "30-30" & Djo_Fed$'F2:PointScore' != "30-40" & Djo_Fed$'F2:PointScore' != "Advantage Returner")
+num_Djo_Fed_norm = nrow(Djo_Fed_norm_points)
+Djo_Fed_norm_points_won = filter(Djo_Fed_norm_points, Djo_Fed_norm_points$'Point Won' == "Novak Djokovic")
+num_Djo_Fed_norm_points_won = nrow(Djo_Fed_norm_points_won)
+Djo_Fed_norm_points_percent = num_Djo_Fed_norm_points_won / num_Djo_Fed_norm
+Djo_Fed_pp_percent
+Djo_Fed_norm_points_percent
