@@ -1,0 +1,29 @@
+Novak_Djokovic_2017_2020 <- read_excel("~/Downloads/Tennis Data Project/Novak Djokovic 2017-2020.xlsx")
+View(Novak_Djokovic_2017_2020)
+Novak_all_years_serving <- filter(Novak_Djokovic_2017_2020, Novak_Djokovic_2017_2020$Server == "Novak Djokovic")
+Novak_all_years_serving %>% filter(Novak_all_years_serving$`Point Won` == "Novak Djokovic")
+pwon = 5295
+ptot = 8026
+pie(c(pwon,ptot-pwon), c("Points won", "Points lost"), radius = 1, main = "Djokovic Points Played", col = rainbow(2), clockwise = TRUE)
+test <- filter(Novak_all_years_serving, Novak_all_years_serving$`Point Won` == "Novak Djokovic")
+test %>% filter(Returner == "Roger Federer")
+316/505
+vFed = 316/505
+nad <- filter(Novak_all_years_serving, Novak_all_years_serving$Returner == "Rafael Nadal")
+nad <- filter(nad, nad$`Point Won` == "Novak Djokovic")
+vNad = 294/498
+zver <- filter(Novak_all_years_serving, Novak_all_years_serving$Returner == "Alexander Zverev")
+zver <- filter(zver, zver$`Point Won` == "Novak Djokovic")
+vZver = 218/327
+med <- filter(Novak_all_years_serving, Novak_all_years_serving$Returner == "Daniil Medvedev")
+med <- filter(med, med$`Point Won` == "Novak Djokovic")
+vMed = 221/360
+tsit <- filter(Novak_all_years_serving, Novak_all_years_serving$Returner =="Stefanos Tsitsipas")
+tsit <- filter(tsit, tsit$`Point Won` == "Novak Djokovic")
+vTsit = 249/390
+ players <- c("Federer", "Nadal", "Zverev", "Medvedev", "Tsitsipas")
+ win_rate = c(vFed, vNad, vZver, vMed, vTsit)
+ win_rate <- c(win_rate, 1-win_rate)
+ Key <- c("Djokovic", "Djokovic", "Djokovic", "Djokovic", "Djokovic", "Opponent", "Opponent", "Opponent","Opponent", "Opponent")
+ data <- data.frame(players, win_rate, Key)
+ ggplot(data, aes(fill = Key, y = win_rate, x = players)) + geom_bar(position = "fill", stat = "identity")
