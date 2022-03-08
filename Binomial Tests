@@ -1,0 +1,65 @@
+Zverev_data <- read_excel("~/Downloads/Tennis Data Project/Alexander Zverev - 2017-2020.xlsx")
+Medvedev_data <- read_excel("~/Downloads/Tennis Data Project/Daniil Medvedev 2017-2020.xlsx")
+Djokovic_data <- read_excel("~/Downloads/Tennis Data Project/Novak Djokovic 2017-2020.xlsx")
+Nadal_data <- read_excel("~/Downloads/Tennis Data Project/Rafael Nadal 2017-2020.xlsx")
+Federer_data <- read_excel("~/Downloads/Tennis Data Project/Roger Federer 2017-2020.xlsx")
+Tsitsipas_data <- read_excel("~/Downloads/Tennis Data Project/Stefanos Tsitsipas 2017-2020.xlsx")
+
+all_data = list(Djokovic_data, Nadal_data, Federer_data, Zverev_data, Medvedev_data, Tsitsipas_data)
+
+names_list = list("Novak Djokovic", "Rafael Nadal", "Roger Federer", "Alexander Zverev", "Daniil Medvedev", "Stefanos Tsitsipas")
+
+
+ 
+  Normal_winp <- c()
+  PP_winp <- c()
+  Number_normal_points <- c()
+  Number_pp <- c()
+  Pres_won <- c()
+  for(i in 1:length(names_list)){
+    for(j in 1:length(names_list)){
+      if(i != j){
+        data <- data.frame(all_data[i])
+        player = names_list[i]
+        opponent = names_list[j]
+        player_i_serving <- filter(data, data$Server == player)
+
+        versus <- filter(player_i_serving, player_i_serving$Returner == opponent)
+        Press_point <- filter(versus, versus$F2.PointScore == "0-30" | versus$F2.PointScore == "0-40" | versus$F2.PointScore == "15-30" | versus$F2.PointScore == "15-40" | versus$F2.PointScore == "30-30" | versus$F2.PointScore == "30-40" | versus$F2.PointScore == "Advantage Returner")
+        num_pp = nrow(Press_point)
+        pp_won <- filter(Press_point, Press_point$Point.Won == player)
+        num_pp_won = nrow(pp_won)
+        pp_percent =  num_pp_won / num_pp
+        norm_points <- filter(versus, versus$F2.PointScore != "0-30" & versus$F2.PointScore != "0-40" & versus$F2.PointScore != "15-30" & versus$F2.PointScore != "15-40" & versus$F2.PointScore != "30-30" & versus$F2.PointScore != "30-40" & versus$F2.PointScore != "Advantage Returner")
+        num_norm = nrow(norm_points)
+        norm_points_won = filter(norm_points, norm_points$Point.Won == player)
+        num_norm_points_won = nrow(norm_points_won)
+        norm_points_percent = num_norm_points_won / num_norm
+        
+        Normal_winp <- append(Normal_winp, norm_points_percent)
+        PP_winp <- append(PP_winp, pp_percent)
+        Number_normal_points <- append(Number_normal_points, num_norm)
+        Number_pp <-append(Number_pp, num_pp)
+        Pres_won <- append(Pres_won, num_pp_won)
+       
+        
+      }
+    }
+  }
+  Player_ <- rep(c("Novak Djokovic", "Rafael Nadal", "Roger Federer", "Alexander Zverev", "Daniil Medvedev", "Stefanos Tsitsipas"), each = 5)
+  Opponent_ <- c("Rafael Nadal", "Roger Federer", "Alexander Zverev", "Daniil Medvedev", "Stefanos Tsitsipas", "Novak Djokovic", "Roger Federer", "Alexander Zverev", "Daniil Medvedev", "Stefanos Tsitsipas", "Novak Djokovic", "Rafael Nadal","Alexander Zverev", "Daniil Medvedev", "Stefanos Tsitsipas", "Novak Djokovic", "Rafael Nadal", "Roger Federer","Daniil Medvedev", "Stefanos Tsitsipas", "Novak Djokovic", "Rafael Nadal", "Roger Federer", "Alexander Zverev", "Stefanos Tsitsipas", "Novak Djokovic", "Rafael Nadal", "Roger Federer", "Alexander Zverev", "Daniil Medvedev")
+  
+  df <- data.frame(Player_, Opponent_, Normal_winp, PP_winp, Number_normal_points, Number_pp, Pres_won)
+  df
+  
+  p_values <- c()
+for (z in 1:nrow(df)){
+  binom_test_result <- binom.test(df$Pres_won[z], df$Number_pp[z], df$Normal_winp[z])
+  p_values <- append(p_values, binom_test_result$p.value)
+}
+ t_df <- cbind(df, p_values)
+  # conducts BH adjustments and creates a vector of values
+  BH <- p.adjust(p_values, "BH", n = length(p_values))
+  
+  # new df that also includes p-values and adjusted p-values 
+  adjusted_df <- cbind(t_df, BH)
