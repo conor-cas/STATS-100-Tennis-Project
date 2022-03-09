@@ -1,0 +1,25 @@
+win1 <- adjusted_df$Normal_winp* adjusted_df$Number_normal_points
+win2 <- adjusted_df$Number_normal_points - win1
+bh_data <- adjusted_df[1:2]
+bh_data <- cbind(bh_data, win1, win2)
+bh_data$Player_ <- factor(bh_data$Player_, levels=unique( bh_data$Opponent_))
+bh_data$Opponent_ <- factor(bh_data$Opponent_, levels = levels(bh_data$Player_))
+brad <- BTm(cbind(win1,win2), Player_, Opponent_, id = "player", data = bh_data)
+bh_data$Player_ <- data.frame(player = bh_data$Player_, serving = 1)
+bh_data$Opponent_ <- data.frame(player = bh_data$Opponent_, serving = 0)
+brad2 <- update(brad, formula = ~ player + serving) 
+BTabilities(brad2)
+summary(brad2)
+# pressure points
+pp_win1 <- adjusted_df$Pres_won
+pp_win2 <- adjusted_df$Number_pp - pp_win1
+bh_pp_data <- adjusted_df[1:2]
+bh_pp_data <- cbind(bh_pp_data, pp_win1, pp_win2)
+bh_pp_data$Player_ <- factor(bh_pp_data$Player_, levels=unique( bh_pp_data$Opponent_))
+bh_pp_data$Opponent_ <- factor(bh_pp_data$Opponent_, levels = levels(bh_pp_data$Player_))
+pp_brad <- BTm(cbind(pp_win1,pp_win2), Player_, Opponent_, id = "player", data = bh_pp_data)
+bh_pp_data$Player_ <- data.frame(player = bh_pp_data$Player_, serving = 1)
+bh_pp_data$Opponent_ <- data.frame(player = bh_pp_data$Opponent_, serving = 0)
+pp_brad2 <- update(pp_brad, formula = ~ player + serving) 
+BTabilities(pp_brad2)
+summary(pp_brad2)
